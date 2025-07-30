@@ -1,8 +1,8 @@
 MySQL Workbench
 
-tickets table:
+ticket table:
 ==============
-CREATE TABLE tickets (
+CREATE TABLE ticket (
 ticket_id INT NOT NULL AUTO_INCREMENT,
 customer_name VARCHAR(100),
 customer_email VARCHAR(100),
@@ -21,3 +21,8 @@ summary_suggestion TEXT,
 created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
 FOREIGN KEY(ticket_id) REFERENCES tickets(ticket_id)
 );
+
+Populating Ticket Table:
+============== 
+INSERT INTO tickets (customer_name, customer_email, issue_description, ticket_status)
+VALUES ("Mark Cuban", "mcuban@gmail.com", "website page is freezing", "open");
