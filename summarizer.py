@@ -13,8 +13,17 @@ conn = mysql.connector.connect(user=os.getenv("DB_USER"),
                                database=os.getenv("DB_NAME"))
 cursor = conn.cursor(dictionary=True)
 
-cursor.execute("SELECT * FROM ticket WHERE ticket_status = 'open'")
-results = cursor.fetchall()
+# Do a LEFT JOIN between ticket and ticket_suggestions
+# Use aliases (t, s) for clean code
+# Add a filter to select only rows where there’s no match in ticket_suggestions (i.e., where no suggestion exists yet)
+# Think:
+# Only return tickets that are open and have no corresponding suggestion.
+
+select_ticket_query = (
+    "SELECt * FROM ticket t "
+    "LEFT JOIN ticket_suggestions s ON t.ticket_id = s.ticket_id "
+    "WHERE t.ticket_status = 'open' AND s.ticket_id IS NULL"
+)
 
 insert_suggestion_query = (
   "INSERT INTO ticket_suggestions (ticket_id, ticket_suggestion)"
@@ -26,6 +35,9 @@ alter_status_query = (
     "SET ticket_status = 'closed' "
     "WHERE ticket_id = %s"
 )
+
+cursor.execute(select_ticket_query)
+results = cursor.fetchall()
 
 #     print(response.output_text)
 for row in results:
